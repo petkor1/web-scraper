@@ -5,21 +5,25 @@ const express = require('express');
 
 const app = express();
 
-const url = 'https://www.biegigorskie.pl/kalendarz-2022/';
+const url = 'https://www.biegigorskie.pl/kalendarz-2023/';
 
 axios(url).then(res=> {
     const html = res.data;
     const $ = cheerio.load(html);
-    const articles = [];
-    $('td', html).each(function (){
-        const text = $(this).text();
-        const url = $(this).find('a').attr('href');
-        articles.push({
-            text,
-            url
-        })
+    const scrapedData = [];
+    $('tbody>tr', html).each(function (index, element){
+        if (index === 0) return true;
+        const tds = $(element).find('td');
+        const category = $(tds[0]).text();
+        const date = $(tds[1]).text();
+        const location = $(tds[2]).text();
+        const distance = $(tds[3]).text();
+        const title = $(tds[4]).text();
+        const url = $(tds[4]).find('a').attr('href');
+        const tableRow = { category, date, location, distance, title, url };
+        scrapedData.push(tableRow);
     })
-    console.log(articles)
+    console.log(scrapedData)
 }).catch(err=>console.log(err))
 
 app.listen(PORT, ()=> console.log(`server running on PORT ${PORT}`));
