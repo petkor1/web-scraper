@@ -14,7 +14,13 @@ axios(url).then(res=> {
     $('tbody>tr', html).each(function (index, element){
         if (index === 0) return true;
         const tds = $(element).find('td');
-        const category = $(tds[0]).text();
+        const category = $(tds[0]).text()
+            .toLowerCase()
+            .replaceAll('i', 'i ')
+            .replaceAll('ss','ss ')
+            .replaceAll('ultra','ultra ').replaceAll('nni ng','nning')
+            .trim()
+            .split(' ');
         const date = $(tds[1]).text();
         const location = $(tds[2]).text();
         const distance = $(tds[3]).text();
